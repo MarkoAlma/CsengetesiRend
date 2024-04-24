@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Csengetési rend</title>
+</head>
+<body>
+    <div class="container">
+    <div class="koz">
+    <span><input type="radio" name="a" id="h45" value="h45" checked> <label for="h45">45'</label></span>
+    <span><input type="radio" name="a" id="h40" value="h40"> <label for="h40">40'</label></span>
+    <span><input type="radio" name="a" id="h35" value="h35"> <label for="h35">35'</label></span>
+    </div>
+    <h1></h1>
+    <div class="info"></div>
+    <div class="info2"></div>
+    <br>
+    <button onclick="refresh()">Frissítés</button>
+    </div>
+    <script src="data_radio.js"></script>
+    
+    <script>
+        let bellShedule = []
+        function refresh() {
+            let selectedValue = document.querySelector("input[type='radio']:checked").value
+            bellShedule = bellShedules[selectedValue]
+            console.log(bellShedule);
+            let currentTimeString = getCurrentTimeString()
+            document.querySelector("h1").innerHTML=currentTimeString
+            console.log(currentTimeString);
+            let visszaad = 0
+            let maradt = 0
+            let maradt2 = 0
+            let current = bellShedule.find(obj => obj.from <= currentTimeString && obj.to >= currentTimeString)
+            if(current) {
+                document.querySelector(".info").innerHTML=`Most a(z) <b>${current.id}.óra</b> van és <b>${current.to}-ig</b> tart.`
+                visszaad = 0
+                maradt = current.to.split(":")
+                maradt2 = currentTimeString.split(":")
+                if (maradt2[0] == maradt[0]) {
+                    visszaad = maradt[1]-maradt2[1]
+                }else {
+                    visszaad = 60-maradt2[1] + +maradt[1]
+                }
+                document.querySelector(".info2").innerHTML=`Még <b>${visszaad} perc</b> van hátra az órából.`
+            }else {
+                let next = bellShedule.find(obj => obj.from > currentTimeString)
+                if(next) {
+                visszaad = 0
+                maradt = next.from.split(":")
+                maradt2 = currentTimeString.split(":")
+                if (maradt2[0] == maradt[0]) {
+                    visszaad = maradt[1]-maradt2[1]
+                }else {
+                    visszaad = 60-maradt2[1] + +maradt[1]
+                }
+                document.querySelector(".info2").innerHTML=`Még <b>${visszaad} perc</b> van hátra a szünetből.`
+                document.querySelector(".info").innerHTML=`Most szünet van és a(z) <b>${next.id}.óra</b> következik, ${next.from}-tól/-től.`
+                }else {
+                    document.querySelector(".info").innerHTML=`Nincs iskolaidő.`
+                }
+                console.log('szünet');
+            }
+        }
+        function getCurrentTimeString() {
+            let now = new Date()
+            let h = now.getHours().toString().padStart(2, '0')
+            let m = now.getMinutes().toString().padStart(2, '0')
+            return h+":"+m
+        }
+    </script>
+</body>
+</html>
