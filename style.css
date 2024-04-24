@@ -36,6 +36,9 @@ button {
 .koz {
     display: flex;
     justify-content: space-between;
+    border: 2px solid darkred;
+    border-radius: 10px;
+    padding: 10px;
 }
 
 h1 {
